@@ -55,10 +55,7 @@ def handle_xbee(xbee_packet):
         payload_dit.update(data_dit)
         sub_topic_str = list(payload_dit.keys())[0]
         payload_dit.update({'timestamp' : timestamp_str})
-
         directory_name_str = sub_topic_str
-
-        print(payload_dit)
         
         #thread_send_mqtt_broker = threading.Thread(target=send_mqtt_broker, args=(sub_topic_str, payload_dit))
         thread_store_data = threading.Thread(target=store_data, args=(directory_name_str, file_name_str, payload_dit))
