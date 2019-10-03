@@ -9,8 +9,8 @@
 #define DHT_SENSOR_PIN 4
 #define ULTRASONIC_SENSOR_PIN 8
 #define DHTTYPE DHT22
-#define COORDINATOR_HIGH_ADDRESS 0x0013A200
-#define COORDINATOR_LOW_ADDRESS  0x4172F939
+#define COORDINATOR_HIGH_ADDRESS 0x00000000
+#define COORDINATOR_LOW_ADDRESS  0x0000FFFF
 
 
 XBee xbee = XBee();
@@ -113,9 +113,9 @@ void loop()
   
   convertFloatToChar(air_temperature_str, air_temperature);  
   convertFloatToChar(air_humidity_str, air_humidity);
-  convertFloatToChar(air_pressure_str, air_pressure);
-  
-  sprintf(data_json, "{'vinyl_house':{'light':%d, 'air_temperature':%s, 'air_humidity':%s, 'air_pressure':%s, 'co2_ppm':%d, 'water_level':%d}}", light, air_temperature_str, air_humidity_str, air_pressure_str, co2_ppm, water_level);
+  convertFloatToChar(air_pressure_str, air_pressure);;
+
+  sprintf(data_json, "{'vinyl_house':{'temperature':%s, 'humidity':%s, 'pressure':%s, 'co2_ppm':%d}}", air_temperature_str, air_humidity_str, air_pressure_str, co2_ppm);
   Serial.println(data_json);
   
   ZBTxRequest zbTx = ZBTxRequest(addr64, data_json, strlen(data_json));
