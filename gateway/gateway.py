@@ -5,6 +5,7 @@ from datetime import datetime
 import json
 import serial
 import time
+import threading
 import os
 
 from xbee import ZigBee
@@ -89,7 +90,7 @@ if __name__ == '__main__':
             time.sleep(0.000000001)
 
     except KeyboardInterrupt:
-        mqtt_client.disconnect()
+        #mqtt_client.disconnect()
         xbee.halt()
         serial_port.close()
         exit(1)
