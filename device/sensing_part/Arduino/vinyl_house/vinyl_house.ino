@@ -113,9 +113,9 @@ void loop()
   
   convertFloatToChar(air_temperature_str, air_temperature);  
   convertFloatToChar(air_humidity_str, air_humidity);
-  convertFloatToChar(air_pressure_str, air_pressure);
-  
-  sprintf(data_json, "{'vinyl_house':{'light':%d, 'air_temperature':%s, 'air_humidity':%s, 'air_pressure':%s, 'co2_ppm':%d, 'water_level':%d}}", light, air_temperature_str, air_humidity_str, air_pressure_str, co2_ppm, water_level);
+  convertFloatToChar(air_pressure_str, air_pressure);;
+
+  sprintf(data_json, "{'vinyl_house':{'temperature':%s, 'humidity':%s, 'pressure':%s, 'co2_ppm':%d}}", air_temperature_str, air_humidity_str, air_pressure_str, co2_ppm);
   Serial.println(data_json);
   
   ZBTxRequest zbTx = ZBTxRequest(addr64, data_json, strlen(data_json));
