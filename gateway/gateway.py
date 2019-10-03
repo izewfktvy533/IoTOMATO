@@ -29,7 +29,7 @@ def store_data(directory_name_str, file_name_str, payload_dit):
     
     except FileNotFoundError:
         os.mkdir(directory_name_str)
-        os.chdri(directory_name_str)
+        os.chdir(directory_name_str)
 
     with open(file_name_str, 'a') as fp:
         json.dump(payload_dit, fp)
