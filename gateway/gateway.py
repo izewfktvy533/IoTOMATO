@@ -14,7 +14,7 @@ import paho.mqtt.client as mqtt
 
 PORT = '/dev/ttyUSB0'
 BAND_RATE = 9600
-MQTT_BROKER_ADDR = '127.0.0.1'
+MQTT_BROKER_ADDR = 'localhost'
 MQTT_BROKER_PORT = 1883
 MAIN_TOPIC = "iotomato/"
 DIRECTORY_NAME = "/home/pi/workspace/IoTOMATO/gateway/data/sensing_part/"
@@ -57,13 +57,13 @@ def handle_xbee(xbee_packet):
         directory_name_str = sub_topic_str
 
         thread_send_mqtt_broker = threading.Thread(target=send_mqtt_broker, args=(sub_topic_str, payload_dit))
-        thread_store_data = threading.Thread(target=store_data, args=(directory_name_str, file_name_str, payload_dit))
+        #thread_store_data = threading.Thread(target=store_data, args=(directory_name_str, file_name_str, payload_dit))
 
         thread_send_mqtt_broker.start()
-        thread_store_data.start()
+        #thread_store_data.start()
 
         thread_send_mqtt_broker.join()
-        thread_store_data.join()
+        #thread_store_data.join()
 
     except UnicodeDecodeError:
         pass
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     serial_port = serial.Serial(PORT, BAND_RATE)
 
     mqtt_client = mqtt.Client(protocol=mqtt.MQTTv31)
-    mqtt_client.connect(host=MQTT_BROKER_ADDR, port=MQTT_BROKER_PORT, keepalive=0)
+    mqtt_client.connect(host=MQTT_BROKER_ADDR, port=MQTT_BROKER_PORT, keepalive=60)
 
     xbee = ZigBee(serial_port, escaped=True, callback=handle_xbee)
 
