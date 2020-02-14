@@ -16,7 +16,7 @@ AWS_PORT   = 8883
 CA_PATH    = "/home/pi/workspace/IoTOMATO/gateway/aws_iot/root-CA.crt"
 KEY_PATH   = "/home/pi/workspace/IoTOMATO/gateway/aws_iot/iotomato.private.key"
 CERT_PATH  = "/home/pi/workspace/IoTOMATO/gateway/aws_iot/iotomato.cert.pem"
-MAIN_TOPIC = "iotomato"
+MAIN_TOPIC = "iotomato/"
 CLIENT_ID  = "IoTOMATO"
 PORT = '/dev/ttyUSB0'
 BAND_RATE = 9600
@@ -49,7 +49,7 @@ def send_mqtt_broker(sub_topic_str, data_dit):
     payload_dit['device'] = device_str
     payload_dit.update(data_dit[device_str])
      
-    myAWSIoTMQTTClient.publish(MAIN_TOPIC, json.dumps(payload_dit), 1)
+    myAWSIoTMQTTClient.publish(MAIN_TOPIC + sub_topic_str, json.dumps(payload_dit), 1)
 
 
 def handle_xbee(xbee_packet):
