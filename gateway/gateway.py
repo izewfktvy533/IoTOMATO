@@ -49,7 +49,7 @@ def send_mqtt_broker(sub_topic_str, data_dit):
     payload_dit['device'] = device_str
     payload_dit.update(data_dit[device_str])
      
-    myAWSIoTMQTTClient.publish(MAIN_TOPIC, json.dumps(payload_dit), 0)
+    myAWSIoTMQTTClient.publish(MAIN_TOPIC, json.dumps(payload_dit), 1)
 
 
 def handle_xbee(xbee_packet):
