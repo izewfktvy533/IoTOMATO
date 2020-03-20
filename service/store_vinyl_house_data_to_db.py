@@ -33,10 +33,10 @@ def onMessage(mqtt_sub, user_data, msg):
     pressure         = payload_dit['air_pressure']
     light            = payload_dit['light']
     co2              = payload_dit['co2_ppm']
-    irrigation_level = payload_dit['water_level']
+    water_level = payload_dit['water_level']
 
-    query = "insert into {0} (timestamp, temperature, humidity, pressure, light, co2, irrigation_level) values (%s, %s, %s, %s, %s, %s, %s)".format(table_name)
-    ret = cur.execute(query, (timestamp, temperature, humidity, pressure, light, co2, irrigation_level))
+    query = "insert into {0} (timestamp, temperature, humidity, pressure, light, co2, water_level) values (%s, %s, %s, %s, %s, %s, %s)".format(table_name)
+    ret = cur.execute(query, (timestamp, temperature, humidity, pressure, light, co2, water_level))
 
     while not ret == 1:
         ret = cur.execute(query)
