@@ -18,18 +18,13 @@ MAIN_TOPIC = 'iotomato/'
 
 
 def send_to_mqtt_broker(sub_topic_str, payload_dit):
-    device_str = sub_topic_str
     mqtt_client.publish(MAIN_TOPIC + sub_topic_str, json.dumps(payload_dit), 0)
 
 
 def handle_xbee(xbee_packet):
     try:
-        payload_dit = dict()
-        data_dit = ast.literal_eval((xbee_packet['rf_data']).decode('utf-8'))
-        payload_dit.update(data_dit)
-        sub_topic_str = list(payload_dit.keys())[0]
-        directory_name_str = sub_topic_str
-        print(payload_dit)
+        payload_dit = ast.literal_eval((xbee_packet['rf_data']).decode('utf-8'))
+        sub_topic_str = payload_dit['device']
 
         thread_send_to_mqtt_broker = threading.Thread(target=send_to_mqtt_broker, args=(sub_topic_str, payload_dit))
         thread_send_to_mqtt_broker.start()
