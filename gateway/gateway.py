@@ -17,8 +17,8 @@ BROKER_PORT = 1883
 AWS_HOST   = "a2jbwrz4hgj7v1-ats.iot.ap-northeast-1.amazonaws.com"
 AWS_PORT   = 8883
 CA_PATH    = "/home/pi/workspace/IoTOMATO/gateway/aws_iot/root-CA.crt"
-KEY_PATH   = "/home/pi/workspace/IoTOMATO/gateway/aws_iot/iotomato.private.key"
-CERT_PATH  = "/home/pi/workspace/IoTOMATO/gateway/aws_iot/iotomato.cert.pem"
+KEY_PATH   = "/home/pi/workspace/IoTOMATO/gateway/aws_iot/iotomato-device.private.key"
+CERT_PATH  = "/home/pi/workspace/IoTOMATO/gateway/aws_iot/iotomato-device.cert.pem"
 MAIN_TOPIC = "iotomato/"
 CLIENT_ID  = "IoTOMATO"
 PORT = '/dev/ttyUSB0'
@@ -52,7 +52,7 @@ def send_to_mqtt_broker(sub_topic_str, data_dit):
     payload_dit['device'] = device_str
     payload_dit.update(data_dit[device_str])
      
-    mqtt_client.publish(MAIN_TOPIC + sub_topic_str, json.dumps(payload_dit), 1)
+    mqtt_client.publish(MAIN_TOPIC + sub_topic_str, json.dumps(payload_dit), 0)
 
 
 def send_to_aws_iot(sub_topic_str, data_dit):

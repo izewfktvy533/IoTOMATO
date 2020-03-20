@@ -16,7 +16,7 @@ TOPIC = 'iotomato/#'
 
 
 def onConnect(mqtt_client, user_data, flags, response_code):
-    mqtt_client.subscribe(TOPIC, qos=1)
+    mqtt_client.subscribe(TOPIC, qos=0)
 
 
 def onMessage(publisher, user_data, msg):

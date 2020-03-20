@@ -14,6 +14,7 @@ BROKER_ADDR = '127.0.0.1'
 BROKER_PORT = 1883
 PORT = '/dev/ttyUSB1'
 BAND_RATE = 9600
+MAIN_TOPIC = 'iotomato/'
 
 
 def send_to_mqtt_broker(sub_topic_str, data_dit):
@@ -21,26 +22,17 @@ def send_to_mqtt_broker(sub_topic_str, data_dit):
 
     payload_dit = {}
     payload_dit['timestamp'] =  data_dit['timestamp']
-    payload_dit['device'] = device_str
-    payload_dit.update(data_dit[device_str])
      
-    mqtt_client.publish(MAIN_TOPIC + sub_topic_str, json.dumps(payload_dit), 1)
+    mqtt_client.publish(MAIN_TOPIC + sub_topic_str, json.dumps(payload_dit), 0)
 
 
 def handle_xbee(xbee_packet):
-    timestamp_datetime = datetime.now()
-    timestamp_str = timestamp_datetime.strftime("%Y/%m/%d %H:%M:%S")
-    file_name_str = timestamp_datetime.strftime("%Y-%m-%d") + ".json"
-
     try:
         payload_dit = dict()
         data_dit = ast.literal_eval((xbee_packet['rf_data']).decode('utf-8'))
         payload_dit.update(data_dit)
         sub_topic_str = list(payload_dit.keys())[0]
-        payload_dit.update({'timestamp' : timestamp_str})
         directory_name_str = sub_topic_str
-
-        print(payload_dit)
 
         thread_send_to_mqtt_broker = threading.Thread(target=send_to_mqtt_broker, args=(sub_topic_str, payload_dit))
         thread_send_to_mqtt_broker.start()
