@@ -7,10 +7,13 @@ import time
 import threading
 import os
 
+import paho.mqtt.client as mqtt
 from xbee import ZigBee
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
 
+BROKER_ADDR = '127.0.0.1'
+BROKER_PORT = 1883
 AWS_HOST   = "a2jbwrz4hgj7v1-ats.iot.ap-northeast-1.amazonaws.com"
 AWS_PORT   = 8883
 CA_PATH    = "/home/pi/workspace/IoTOMATO/gateway/aws_iot/root-CA.crt"
@@ -41,7 +44,18 @@ def store_data(directory_name_str, file_name_str, payload_dit):
     os.chdir(cpath)
 
 
-def send_mqtt_broker(sub_topic_str, data_dit):
+def send_to_mqtt_broker(sub_topic_str, data_dit):
+    device_str = sub_topic_str
+
+    payload_dit = {}
+    payload_dit['timestamp'] =  data_dit['timestamp']
+    payload_dit['device'] = device_str
+    payload_dit.update(data_dit[device_str])
+     
+    mqtt_client.publish(MAIN_TOPIC + sub_topic_str, json.dumps(payload_dit), 1)
+
+
+def send_to_aws_iot(sub_topic_str, data_dit):
     device_str = sub_topic_str
 
     payload_dit = {}
@@ -65,13 +79,16 @@ def handle_xbee(xbee_packet):
         payload_dit.update({'timestamp' : timestamp_str})
         directory_name_str = sub_topic_str
 
-        thread_send_mqtt_broker = threading.Thread(target=send_mqtt_broker, args=(sub_topic_str, payload_dit))
+        thread_send_to_aws_iot = threading.Thread(target=send_to_aws_iot, args=(sub_topic_str, payload_dit))
+        thread_send_to_mqtt_broker = threading.Thread(target=send_to_mqtt_broker, args=(sub_topic_str, payload_dit))
         thread_store_data = threading.Thread(target=store_data, args=(directory_name_str, file_name_str, payload_dit))
 
-        thread_send_mqtt_broker.start()
+        thread_send_to_aws_iot.start()
+        thread_send_to_mqtt_broker.start()
         thread_store_data.start()
 
-        thread_send_mqtt_broker.join()
+        thread_send_to_aws_iot.join()
+        thread_send_to_mqtt_broker.join()
         thread_store_data.join()
 
     except UnicodeDecodeError:
@@ -95,16 +112,20 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 # Connect and subscribe to AWS IoT
 myAWSIoTMQTTClient.connect()
 
+mqtt_client = mqtt.Client(protocol=mqtt.MQTTv31)
+mqtt_client.connect(host=BROKER_ADDR, port=BROKER_PORT, keepalive=60)
+
 serial_port = serial.Serial(PORT, BAND_RATE)
 xbee = ZigBee(serial_port, escaped=True, callback=handle_xbee)
 
 
 try:
     while True:
-        time.sleep(0.000001)
+        time.sleep(0.001)
 
 except KeyboardInterrupt:
     myAWSIoTMQTTClient.disconnect()
+    mqtt_client.disconnect()
     xbee.halt()
     serial_port.close()
     exit(0)
