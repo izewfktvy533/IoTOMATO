@@ -17,12 +17,8 @@ BAND_RATE = 9600
 MAIN_TOPIC = 'iotomato/'
 
 
-def send_to_mqtt_broker(sub_topic_str, data_dit):
+def send_to_mqtt_broker(sub_topic_str, payload_dit):
     device_str = sub_topic_str
-
-    payload_dit = {}
-    payload_dit['timestamp'] =  data_dit['timestamp']
-     
     mqtt_client.publish(MAIN_TOPIC + sub_topic_str, json.dumps(payload_dit), 0)
 
 
@@ -33,6 +29,7 @@ def handle_xbee(xbee_packet):
         payload_dit.update(data_dit)
         sub_topic_str = list(payload_dit.keys())[0]
         directory_name_str = sub_topic_str
+        print(payload_dit)
 
         thread_send_to_mqtt_broker = threading.Thread(target=send_to_mqtt_broker, args=(sub_topic_str, payload_dit))
         thread_send_to_mqtt_broker.start()
