@@ -4,6 +4,7 @@
 #include "HP20x_dev.h"
 #include "Ultrasonic.h"
 
+#define DEVICE_ID 1
 #define CO2_SENSOR S_SERIAL
 #define LIGHT_SENSOR_PIN A1
 #define DHT_SENSOR_PIN 4
@@ -11,7 +12,6 @@
 #define DHTTYPE DHT22
 #define COORDINATOR_HIGH_ADDRESS 0x0013A200
 #define COORDINATOR_LOW_ADDRESS  0x415411AB
-
 
 XBee xbee = XBee();
 SoftwareSerial S_SERIAL(2, 3);
@@ -24,7 +24,6 @@ const unsigned char CMD_FOR_CO2_SENSOR[] =
   0xff, 0x01, 0x86, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x79
 };
-
 
 
 inline void convertFloatToChar(char* str, float value)
@@ -50,8 +49,7 @@ inline void convertFloatToChar(char* str, float value)
 }
 
 
-
-inline int get_co2_ppm()
+inline int get_co2()
 {
   byte data[9];
   memset(data, 0, 9);
@@ -77,7 +75,6 @@ inline int get_co2_ppm()
 }
 
 
-
 void setup()
 {
   Serial.begin(9600);
@@ -94,29 +91,28 @@ void loop()
 {
   int start_time_m = millis();
   
-  int   light            = analogRead(LIGHT_SENSOR_PIN);
-  int   co2_ppm          = get_co2_ppm();
-  int   water_level      = ultrasonic.MeasureInCentimeters();
-  float air_temperature  = dht22.readTemperature();
-  float air_humidity     = dht22.readHumidity();
-  float air_pressure     = HP20x.ReadPressure() / 100.0;
+  int   light       = analogRead(LIGHT_SENSOR_PIN);
+  int   co2         = get_co2();
+  int   water_level = ultrasonic.MeasureInCentimeters();
+  float temperature = dht22.readTemperature();
+  float humidity    = dht22.readHumidity();
+  float pressure    = HP20x.ReadPressure() / 100.0;
   
   char data_json[256];
-  char air_temperature_str[16];
-  char air_humidity_str[16];
-  char air_pressure_str[16];
+  char temperature_str[16];
+  char humidity_str[16];
+  char pressure_str[16];
 
   memset(data_json, 0, 256);
-  memset(air_temperature_str, 0, 16);
-  memset(air_humidity_str, 0, 16);
-  memset(air_pressure_str, 0, 16);  
+  memset(temperature_str, 0, 16);
+  memset(humidity_str, 0, 16);
+  memset(pressure_str, 0, 16);  
   
-  convertFloatToChar(air_temperature_str, air_temperature);  
-  convertFloatToChar(air_humidity_str, air_humidity);
-  convertFloatToChar(air_pressure_str, air_pressure);;
+  convertFloatToChar(temperature_str, temperature);  
+  convertFloatToChar(humidity_str, humidity);
+  convertFloatToChar(pressure_str, pressure);;
 
-  //sprintf(data_json, "{'vinyl_house':{'temperature':%s, 'humidity':%s, 'pressure':%s, 'co2_ppm':%d}}", air_temperature_str, air_humidity_str, air_pressure_str, co2_ppm);
-  sprintf(data_json, "{'vinyl_house':{'light':%d, 'air_temperature':%s, 'air_humidity':%s, 'air_pressure':%s, 'co2_ppm':%d, 'water_level':%d}}", light, air_temperature_str, air_humidity_str, air_pressure_str, co2_ppm, water_level);
+  sprintf(data_json, "{'environment': {'device_id':\"%d\", 'temperature':%s, 'humidity':%s, 'pressure':%s, 'light':%d, 'co2':%d, 'water_level':%d}}", DEVICE_ID, temperature_str, humidity_str, pressure_str, light, co2, water_level);
   Serial.println(data_json);
   
   ZBTxRequest zbTx = ZBTxRequest(addr64, data_json, strlen(data_json));

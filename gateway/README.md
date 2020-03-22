@@ -1,4 +1,5 @@
 # Gateway
 
-## Language
-Python3
+## Requirement
+>*$ apt install mosquitto*
+

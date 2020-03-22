@@ -1,3 +1,5 @@
+Need to add these folders to Arduino's Sketchbook location.
+
 Need to install below libraries and put into libraries folder in arduino sketchbook location.
 
 ## Libraries

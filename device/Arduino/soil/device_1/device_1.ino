@@ -7,17 +7,16 @@
 #include <XBee.h>
 #include "Wire.h"
 
+#define DEVICE_ID 1
 #define VWC_PIN A0
 #define EC_PIN  A1
 #define TEMP_PIN A2
 #define PWR_PIN 9
 #define XBee_wake 7
-
 #define LED_PIN   13
 
 XBee xbee = XBee();
 XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x0000FFFF);
-
 
 
 inline void convertFloatToChar(char* str, float value)
@@ -64,6 +63,7 @@ void setup() {
   delay(100);
 }
 
+
 void loop() {
   int start_time_m = millis();
   
@@ -100,27 +100,10 @@ void loop() {
   convertFloatToChar(ECread_char, ec);
   convertFloatToChar(TEMPread_char, temperature);
 
-  sprintf(json, "{'soil_status':{'VWC':%s, 'EC':%s, 'TEMP':%s}}", VWCread_char, ECread_char, TEMPread_char);
+  sprintf(json, "{'soil': {'device_id':\"%d\", 'vwc':%s, 'ec':%s, 'temperature':%s}}", DEVICE_ID, VWCread_char, ECread_char, TEMPread_char);
 
-  //Serial.println(json);
   ZBTxRequest zbTx = ZBTxRequest(addr64, json, strlen(json));
   xbee.send(zbTx);
-
-
-
-  Serial.print("VWC: ");
-  Serial.print(vwc);
-  Serial.println(" %");
-
-  Serial.print("EC: ");
-  Serial.print(ec);
-  Serial.println(" mS/cm");
-
-  Serial.print("Temp: ");
-  Serial.print(temperature);
-  Serial.println(" C");
-
-  Serial.println("");
 
   digitalWrite(XBee_wake, HIGH); // HIGH = +5V, XBee OFF
 
