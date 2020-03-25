@@ -12,7 +12,7 @@ from xbee import ZigBee
 
 BROKER_ADDR = '127.0.0.1'
 BROKER_PORT = 1883
-PORT = '/dev/ttyUSB1'
+PORT = '/dev/ttyUSB0'
 BAND_RATE = 9600
 MAIN_TOPIC = 'iotomato/'
 
