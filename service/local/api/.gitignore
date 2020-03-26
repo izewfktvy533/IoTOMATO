@@ -1,1 +1,4 @@
 node_modules/
+
+# 環境変数の読み込み
+.envrc
