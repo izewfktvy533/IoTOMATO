@@ -4,9 +4,9 @@ const express = require('express');
 const mysql   = require('mysql');
 const router = express.Router();
 const con_db  = mysql.createConnection({
-    host: 'localhost',
-    user: 'iotomato',
-    password: 'iotomato',
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
     database: 'iotomato',
     timezone: 'jst'
 });
