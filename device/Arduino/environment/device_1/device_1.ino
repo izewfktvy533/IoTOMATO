@@ -1,12 +1,13 @@
 #include <SoftwareSerial.h>
+#include "Digital_Light_TSL2561.h"
 #include "XBee.h"
 #include "DHT.h"
 #include "HP20x_dev.h"
 #include "Ultrasonic.h"
 
 #define DEVICE_ID 1
+#define TANK_HEIGHT 30
 #define CO2_SENSOR S_SERIAL
-#define LIGHT_SENSOR_PIN A1
 #define DHT_SENSOR_PIN 4
 #define ULTRASONIC_SENSOR_PIN 8
 #define DHTTYPE DHT22
@@ -82,6 +83,7 @@ void setup()
   xbee.setSerial(Serial);
   dht22.begin();
   HP20x.begin();
+  TSL2561.init();
   delay(100);
 }
 
@@ -91,9 +93,9 @@ void loop()
 {
   int start_time_m = millis();
   
-  int   light       = analogRead(LIGHT_SENSOR_PIN);
+  int   light       = TSL2561.readVisibleLux();
   int   co2         = get_co2();
-  int   water_level = ultrasonic.MeasureInCentimeters();
+  int   water_level = TANK_HEIGHT - ultrasonic.MeasureInCentimeters();
   float temperature = dht22.readTemperature();
   float humidity    = dht22.readHumidity();
   float pressure    = HP20x.ReadPressure() / 100.0;

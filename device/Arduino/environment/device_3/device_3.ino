@@ -5,6 +5,7 @@
 #include "DHT.h"
 
 #define DEVICE_ID 3
+#define LIGHT_SENSOR_PIN A1
 #define DHT_SENSOR_PIN 4
 #define DHTTYPE DHT22
 #define COORDINATOR_HIGH_ADDRESS 0x0013A200
@@ -54,7 +55,7 @@ void loop()
 {
   int start_time_m = millis();
   
-  int   light       = TSL2561.readVisibleLux();
+  int   light       = analogRead(LIGHT_SENSOR_PIN);
   float temperature = dht22.readTemperature();
   float humidity    = dht22.readHumidity();
   
