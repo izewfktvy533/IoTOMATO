@@ -5,6 +5,7 @@
 #include "Ultrasonic.h"
 
 #define DEVICE_ID 1
+#define TANK_HEIGHT 30
 #define CO2_SENSOR S_SERIAL
 #define LIGHT_SENSOR_PIN A1
 #define DHT_SENSOR_PIN 4
@@ -93,7 +94,7 @@ void loop()
   
   int   light       = analogRead(LIGHT_SENSOR_PIN);
   int   co2         = get_co2();
-  int   water_level = ultrasonic.MeasureInCentimeters();
+  int   water_level = BOTTLE HEIGHT - ultrasonic.MeasureInCentimeters();
   float temperature = dht22.readTemperature();
   float humidity    = dht22.readHumidity();
   float pressure    = HP20x.ReadPressure() / 100.0;
