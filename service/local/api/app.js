@@ -22,5 +22,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/iotomato/api/v1/', router);
 
-app.listen(port)
+app.listen(port, function() {
+  console.log('app listening on port ', port);
+});
 

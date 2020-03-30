@@ -11,7 +11,14 @@ const con_db  = mysql.createConnection({
     timezone: 'jst'
 });
 
-con_db.connect();
+con_db.connect(error => {
+  if (error) {
+    //throw new Error({ error: 'Cannot connected with DB', code: error.code, message: 'error.sqlMessage' })
+    throw new Error('Cannot connect with DB');
+  }
+
+  console.log('connected with DB');
+});
 
 
 router.get('/temperature', function(req, res) {
@@ -36,6 +43,7 @@ router.get('/temperature', function(req, res) {
     });
 
 });
+
 
 
 router.get('/humidity', function(req, res) {
