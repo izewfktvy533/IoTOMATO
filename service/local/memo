@@ -1,0 +1,33 @@
+sudo apt install mysql-server-5.7
+sudo apt install libssl1.0-dev
+sudo apt install nodejs-dev
+sudo apt install nodejs-dev
+sudo apt install node-gyp
+sudo apt install npm
+
+
+
+
+set global validate_password_policy = "LOW";
+
+
+CREATE USER 'iotomato'@'localhost' IDENTIFIED BY 'iotomato';
+
+
+grant all privileges on *.* to developer@"%" identified by 'developer' with grant option;
+
+
+
+
+
+
+MySQLの設定ファイル
+デフォルトでは「127.0.0.1」(ループバックアドレスなので同じホスト内のみ接続可能)となっているので、接続したいホストに応じてに変更する必要があります。
+
+/etc/mysql/mysql.conf.d/mysqld.cnf
+bind-address            = 0.0.0.0
+
+
+
+
+
